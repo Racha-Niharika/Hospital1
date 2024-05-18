@@ -1,0 +1,23 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.HospitalAdmin",
+      "description": "HospitalAdmin"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "HospitalAdmin",
+      "description": "Role for Administration of Hospital",
+      "scope-references": [
+        "$XSAPPNAME.HospitalAdmin"
+      ]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://*.cfapps.us10-001.hana.ondemand.com/**"
+    ]
+  }
+}

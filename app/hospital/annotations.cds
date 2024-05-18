@@ -1,0 +1,1 @@
+using hospital as service from '../../srv/hospital';
