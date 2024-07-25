@@ -8,34 +8,43 @@
   "dependencies": {
     "@cap-js/postgres": "^1.8.0",
     "@sap/cds": "^7",
+    "@sap/ux-ui5-tooling": "^1.14.1",
     "@sap/xssec": "^3",
+    "convert-excel-to-json": "^1.7.0",
     "express": "^4",
-    "passport": "^0"
+    "passport": "^0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1",
     "@sap/cds-dk": "^7",
-    "@sap/ux-specification": "^1.120.10"
+    "@sap/ux-specification": "^1.120.14",
+    "@ui5/cli": "^3.11.1"
   },
   "scripts": {
     "start": "cds-serve",
     "watch-hospital": "cds watch --open hospital/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-hosptal1": "cds watch --open hosptal1/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-hosptal1": "cds watch --open hosptal1/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-hospital1": "cds watch --open hospital1/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
+    "fiori": {
+      "lean_draft": true,
+      "bypass_draft": true
+    },
     "requires": {
       "db": {
-        "impl": "@cap-js/postgres",
-        "pool": {
-          "max": 20
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db.sqlite"
         }
-      },
-      "auth": "xsuaa"
+      }
     }
   },
   "sapux": [
     "app/hospital",
     "app/hosptal1",
-    "app/hospital"
+    "app/hospital",
+    "app/hospital1"
   ]
 }

@@ -26,6 +26,27 @@ modules:
       - name: postgresql
       - name: Hospital1-auth
 
+  
+
+  - name: Hospital1
+    type: approuter.nodejs
+    path: app/
+    parameters:
+      buildpack: nodejs_buildpack
+      stack: cflinuxfs4
+      keep-existing-routes: true
+      disk-quota: 2048M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: Hospital1-auth
+
+
   - name: Hospital1-postgresql-deployer
     type: nodejs
     path: gen/pg
@@ -38,23 +59,7 @@ modules:
           command: npm start
     requires:
       - name: postgresql
-
-  - name: Hospital1
-    type: approuter.nodejs
-    path: app/
-    parameters:
-      keep-existing-routes: true
-      disk-quota: 256M
-      memory: 256M
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
-      - name: Hospital1-auth
-
+      
 resources:
   - name: postgresql
     type: org.cloudfoundry.managed-service

@@ -1,0 +1,26 @@
+specVersion: "3.0"
+metadata:
+  name: hospital1
+type: application
+framework:
+  name: OpenUI5
+  version: "1.121.0"
+  libraries:
+    - name: sap.m
+    - name: sap.f
+    - name: sap.ui.layout
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /odata
+            url: http://localhost:4004/

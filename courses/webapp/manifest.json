@@ -1,0 +1,191 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "ui5.cc.courses",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.12.2",
+      "toolsId": "640d5402-5c4c-47cc-8384-dca90d5a12bf"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/hospital/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      },
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.126.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "ui5.cc.courses.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "CoursesList",
+          "target": "CoursesList"
+        },
+        {
+          "pattern": "Courses({key}):?query:",
+          "name": "CoursesObjectPage",
+          "target": "CoursesObjectPage"
+        },
+        {
+          "pattern": "Courses({key})/Books({key2}):?query:",
+          "name": "Courses_BooksObjectPage",
+          "target": "Courses_BooksObjectPage"
+        }
+      ],
+      "targets": {
+        "CoursesList": {
+          "type": "Component",
+          "id": "CoursesList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Courses",
+              "variantManagement": "Page",
+              "navigation": {
+                "Courses": {
+                  "detail": {
+                    "route": "CoursesObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "CoursesObjectPage": {
+          "type": "Component",
+          "id": "CoursesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Courses",
+              "entitySet": "Courses",
+              "navigation": {
+                "Books": {
+                  "detail": {
+                    "route": "Courses_BooksObjectPage"
+                  }
+                }
+              },
+              "content": {
+                "header": {
+                  "actions": {
+                    "spreadsheetUpload": {
+                      "id": "spreadsheetUploadButton",
+                      "text": "upload",
+                      "enabled": "{ui>/isEditable}",
+                      "press": "ui5.cc.courses.ext.ObjectPageExtController.openSpreadsheetUploadDialog",
+                      "requiresSelection": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Courses_BooksObjectPage": {
+          "type": "Component",
+          "id": "Courses_BooksObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Courses/Books"
+            }
+          }
+        }
+      }
+    },
+    "resourceRoots": {
+      "cc.spreadsheetimporter.v1_1_1": "./thirdparty/customcontrol/spreadsheetimporter/v1_1_1"
+    },
+    "componentUsages": {
+      "spreadsheetImporter": {
+        "name": "cc.spreadsheetimporter.v1_1_1"
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}
