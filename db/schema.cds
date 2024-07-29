@@ -14,7 +14,7 @@ entity Hospital : managed {
     @title: 'no of patients'
     no_of_patients: Integer ;
 }
-entity Courses : cuid, managed {
+entity Courses : cuid {
     @title: 'Code'
     code: String(3);
     @title: 'Description'
@@ -22,11 +22,13 @@ entity Courses : cuid, managed {
     @title: 'Books'
     Books : Composition of many Books on Books.code=$self;
 }
-entity Books : cuid, managed {
+entity Books : cuid{
     key ID    : UUID;
 
     @title: 'Code'
-    code: Association to one Courses;
+    code: Association to Courses;
+    
+    bookname:String(20);
     @title: 'Description'
     description: String(20);
 }
