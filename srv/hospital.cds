@@ -1,8 +1,5 @@
 using {com.satinfotech.hospital as db} from '../db/schema';
-
-service hospital {
-   
-   
+service hospital {  
     entity Books as projection on db.Books{
         @UI.Hidden: true
         ID,
@@ -13,30 +10,8 @@ service hospital {
         ID,
         *
     };
-
-
-
 };
-
-
-
-
-
-
 annotate hospital.Courses with @odata.draft.enabled;
-
-
-
-
-
-
-
-
-
-
-
-
-
 annotate hospital.Courses with @(
     UI.LineItem: [
         {
@@ -65,7 +40,7 @@ annotate hospital.Courses with @(
         {
             $Type: 'UI.ReferenceFacet',
             ID: 'courseFacet',
-            Label: 'Product Facets',
+            Label: 'course Facets',
             Target: '@UI.FieldGroup#product'
         },
         {
@@ -98,10 +73,6 @@ annotate hospital.Books with @(
             Label: 'ID',
             Value: ID
         },
-        
-        
-      
-      
     ],
     UI.FieldGroup #Books : {
         $Type : 'UI.FieldGroupType',
