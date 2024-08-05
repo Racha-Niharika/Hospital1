@@ -1,0 +1,197 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "doctor",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.14.2",
+      "toolsId": "0f74fc0f-86ef-4d19-9d57-7a7d7073c8dd"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/hospital/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      },
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.126.2",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "doctor.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "HospitalList",
+          "target": "HospitalList"
+        },
+        {
+          "pattern": "Hospital({key}):?query:",
+          "name": "HospitalObjectPage",
+          "target": "HospitalObjectPage"
+        },
+        {
+          "pattern": "Hospital({key})/Doctor({key2}):?query:",
+          "name": "DoctorObjectPage",
+          "target": "DoctorObjectPage"
+        }
+      ],
+      "targets": {
+        "HospitalList": {
+          "type": "Component",
+          "id": "HospitalList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Hospital",
+              "variantManagement": "Page",
+              "navigation": {
+                "Hospital": {
+                  "detail": {
+                    "route": "HospitalObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "HospitalObjectPage": {
+          "type": "Component",
+          "id": "HospitalObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Hospital",
+              "entitySet": "Hospital",
+              "navigation": {
+                "Doctor": {
+                  "detail": {
+                    "route": "DoctorObjectPage"
+                  }
+                }
+              },
+              "content": {
+                "header": {
+                  "actions": {
+                    "spreadsheetUpload": {
+                      "id": "spreadsheetUploadButton",
+                      "text": "upload",
+                      "enabled": "{ui>/isEditable}",
+                      "press": "doctor.ext.ObjectPageExtController.openSpreadsheetUploadDialog",
+                      "requiresSelection": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DoctorObjectPage": {
+          "type": "Component",
+          "id": "DoctorObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Hospital/Doctor"
+            }
+          }
+        }
+      }
+    },
+    "resourceRoots": {
+      "cc.spreadsheetimporter.v1_1_1": "./thirdparty/customcontrol/spreadsheetimporter/v1_1_1"
+    },
+    "componentUsages": {
+      "spreadsheetImporter": {
+        "name": "cc.spreadsheetimporter.v1_1_1"
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

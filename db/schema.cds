@@ -1,10 +1,10 @@
 namespace com.satinfotech.hospital;
-using {cuid,managed } from '@sap/cds/common';
+using {cuid } from '@sap/cds/common';
 
-entity Hospital : managed {
-     key ID : UUID;
+entity Hospital : cuid  {
+
     @title: 'HospitalID'
-    hospital_id: String;
+    hospital_id: String(5);
     @title: 'Hospital Name'
     hospital_name: String(20) ;
     @title: 'Address'
@@ -13,6 +13,17 @@ entity Hospital : managed {
     no_of_doctors: Integer;
     @title: 'no of patients'
     no_of_patients: Integer ;
+    Doctor : Composition of many Doctor on Doctor.id=$self;
+}
+entity Doctor : cuid {
+     key ID : UUID;
+     id:Association to Hospital;
+    @title: 'name'
+    name: String(50);
+    @title: 'profession'
+    profession: String(50);
+    @title: 'experience'
+    experience : String(50);
 }
 entity Courses : cuid {
     @title: 'Code'

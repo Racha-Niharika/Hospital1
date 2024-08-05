@@ -10,8 +10,135 @@ service hospital {
         ID,
         *
     };
+   entity Hospital as projection on db.Hospital{
+        @UI.Hidden: true
+        ID,
+        *
+    };
+    entity Doctor as projection on db.Doctor{
+        @UI.Hidden: true
+        ID,
+        *
+    };
 };
 annotate hospital.Courses with @odata.draft.enabled;
+annotate hospital.Hospital with @odata.draft.enabled;
+annotate hospital.Hospital with @(
+    UI.LineItem: [
+        
+        {
+            Label: 'hospital_id',
+            Value: hospital_id
+        },
+        {
+            Label: 'hospital_name',
+            Value: hospital_name
+        },
+        {
+            Label: 'address',
+            Value: address
+        },
+        {
+            Label: 'no_of_doctors',
+            Value: no_of_doctors
+        },
+         {
+            Label: 'no_of_patients',
+            Value: no_of_patients
+        }
+
+        
+    ],
+    UI.FieldGroup #hospital: {
+        $Type: 'UI.FieldGroupType',
+        Data: [
+             {
+            Label: 'hospital_id',
+            Value: hospital_id
+        },
+        {
+            Label: 'hospital_name',
+            Value: hospital_name
+        },
+        {
+            Label: 'address',
+            Value: address
+        },
+        {
+            Label: 'no_of_doctors',
+            Value: no_of_doctors
+        },
+         {
+            Label: 'no_of_patients',
+            Value: no_of_patients
+        }
+
+        ]
+    },
+    UI.Facets: [
+        {
+            $Type: 'UI.ReferenceFacet',
+            ID: 'hospitalFacet',
+            Label: 'hospital Facets',
+            Target: '@UI.FieldGroup#hospital'
+        }
+        ,
+        {
+            $Type: 'UI.ReferenceFacet',
+            ID: 'DoctorFacet',
+            Label: 'Working Doctors',
+            Target:'Doctor/@UI.LineItem',
+            
+        }
+    ]
+);
+annotate hospital.Doctor with @(
+    UI.LineItem:[
+       
+        {
+            
+            Label: 'name',
+            Value: name
+
+        },
+         {
+            Label: 'profession',
+            Value:  profession
+        },
+        {
+            Label: 'experience',
+            Value: experience
+        },
+    ],
+    UI.FieldGroup #Doctor : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+           
+        {
+            Label: 'name',
+            Value: name
+        },
+         {
+            Label: 'profession',
+            Value: profession
+        },
+        {
+            Label: 'experience',
+            Value: experience
+        },
+         
+       
+        ],
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'DoctorFacet',
+            Label : 'Doctors',
+            Target : '@UI.FieldGroup#Doctor',
+        },
+    ],
+);
 annotate hospital.Courses with @(
     UI.LineItem: [
         {

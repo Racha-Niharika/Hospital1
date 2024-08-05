@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="hospital" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Books" EntityType="hospital.Books">
+                    <NavigationPropertyBinding Path="code" Target="Courses"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Books"/>
+                </EntitySet>
+                <EntitySet Name="Courses" EntityType="hospital.Courses">
+                    <NavigationPropertyBinding Path="Books" Target="Books"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Courses"/>
+                </EntitySet>
+                <EntitySet Name="Hospital" EntityType="hospital.Hospital">
+                    <NavigationPropertyBinding Path="Doctor" Target="Doctor"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Hospital"/>
+                </EntitySet>
+                <EntitySet Name="Doctor" EntityType="hospital.Doctor">
+                    <NavigationPropertyBinding Path="id" Target="Hospital"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Doctor"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name="Books">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="code" Type="hospital.Courses" Partner="Books">
+                    <ReferentialConstraint Property="code_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="code_ID" Type="Edm.Guid"/>
+                <Property Name="bookname" Type="Edm.String" MaxLength="20"/>
+                <Property Name="description" Type="Edm.String" MaxLength="20"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="hospital.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="hospital.Books"/>
+            </EntityType>
+            <EntityType Name="Courses">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="code" Type="Edm.String" MaxLength="3"/>
+                <Property Name="description" Type="Edm.String" MaxLength="50"/>
+                <NavigationProperty Name="Books" Type="Collection(hospital.Books)" Partner="code">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="hospital.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="hospital.Courses"/>
+            </EntityType>
+            <EntityType Name="Hospital">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="hospital_id" Type="Edm.String"/>
+                <Property Name="hospital_name" Type="Edm.String" MaxLength="20"/>
+                <Property Name="address" Type="Edm.String" MaxLength="20"/>
+                <Property Name="no_of_doctors" Type="Edm.Int32"/>
+                <Property Name="no_of_patients" Type="Edm.Int32"/>
+                <NavigationProperty Name="Doctor" Type="Collection(hospital.Doctor)" Partner="id">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="hospital.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="hospital.Hospital"/>
+            </EntityType>
+            <EntityType Name="Doctor">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="id" Type="hospital.Hospital" Partner="Doctor">
+                    <ReferentialConstraint Property="id_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="id_ID" Type="Edm.Guid"/>
+                <Property Name="name" Type="Edm.String" MaxLength="50"/>
+                <Property Name="profession" Type="Edm.String" MaxLength="50"/>
+                <Property Name="experience" Type="Edm.String" MaxLength="50"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <NavigationProperty Name="DraftAdministrativeData" Type="hospital.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="hospital.Doctor"/>
+            </EntityType>
+            <EntityType Name="DraftAdministrativeData">
+                <Key>
+                    <PropertyRef Name="DraftUUID"/>
+                </Key>
+                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+                <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+            </EntityType>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Books"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="hospital.Books"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Courses"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="hospital.Courses"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Hospital"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="hospital.Hospital"/>
+            </Action>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Doctor"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="hospital.Doctor"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Courses"/>
+                <ReturnType Type="hospital.Courses"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Hospital"/>
+                <ReturnType Type="hospital.Hospital"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Courses"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="hospital.Courses"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="hospital.Hospital"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="hospital.Hospital"/>
+            </Action>
+            <Annotations Target="hospital.Books">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="ID"/>
+                            <PropertyValue Property="Value" Path="ID"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="bookname"/>
+                            <PropertyValue Property="Value" Path="bookname"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="description"/>
+                            <PropertyValue Property="Value" Path="description"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="ID"/>
+                            <PropertyValue Property="Value" Path="ID"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Books">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="ID"/>
+                                    <PropertyValue Property="Value" Path="ID"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="book name"/>
+                                    <PropertyValue Property="Value" Path="bookname"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="description"/>
+                                    <PropertyValue Property="Value" Path="description"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="ID"/>
+                                    <PropertyValue Property="Value" Path="ID"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="ItemsFacet"/>
+                            <PropertyValue Property="Label" String="Items"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Books"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.EntityContainer/Books">
+                <Annotation Term="Common.DraftNode">
+                    <Record Type="Common.DraftNodeType">
+                        <PropertyValue Property="PreparationAction" String="hospital.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.Books/ID">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Books/code">
+                <Annotation Term="Common.Label" String="Code"/>
+            </Annotations>
+            <Annotations Target="hospital.Books/code_ID">
+                <Annotation Term="Common.Label" String="Code"/>
+            </Annotations>
+            <Annotations Target="hospital.Books/description">
+                <Annotation Term="Common.Label" String="Description"/>
+            </Annotations>
+            <Annotations Target="hospital.Books/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Books/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Books/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Books/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="code"/>
+                            <PropertyValue Property="Value" Path="code"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="description"/>
+                            <PropertyValue Property="Value" Path="description"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="product">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="code"/>
+                                    <PropertyValue Property="Value" Path="code"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="description"/>
+                                    <PropertyValue Property="Value" Path="description"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="courseFacet"/>
+                            <PropertyValue Property="Label" String="course Facets"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#product"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="relatedBooksFacet"/>
+                            <PropertyValue Property="Label" String="Related books"/>
+                            <PropertyValue Property="Target" AnnotationPath="Books/@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.EntityContainer/Courses">
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="hospital.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="hospital.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="hospital.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.Courses/ID">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses/code">
+                <Annotation Term="Common.Label" String="Code"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses/description">
+                <Annotation Term="Common.Label" String="Description"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses/Books">
+                <Annotation Term="Common.Label" String="Books"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Courses/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="hospital_id"/>
+                            <PropertyValue Property="Value" Path="hospital_id"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="hospital_name"/>
+                            <PropertyValue Property="Value" Path="hospital_name"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="address"/>
+                            <PropertyValue Property="Value" Path="address"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="no_of_doctors"/>
+                            <PropertyValue Property="Value" Path="no_of_doctors"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="no_of_patients"/>
+                            <PropertyValue Property="Value" Path="no_of_patients"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="hospital">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="hospital_id"/>
+                                    <PropertyValue Property="Value" Path="hospital_id"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="hospital_name"/>
+                                    <PropertyValue Property="Value" Path="hospital_name"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="address"/>
+                                    <PropertyValue Property="Value" Path="address"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="no_of_doctors"/>
+                                    <PropertyValue Property="Value" Path="no_of_doctors"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="no_of_patients"/>
+                                    <PropertyValue Property="Value" Path="no_of_patients"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="hospitalFacet"/>
+                            <PropertyValue Property="Label" String="hospital Facets"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#hospital"/>
+                        </Record>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="relatedBooksFacet"/>
+                            <PropertyValue Property="Label" String="Related books"/>
+                            <PropertyValue Property="Target" AnnotationPath="Doctor/@UI.LineItem"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.EntityContainer/Hospital">
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="hospital.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="hospital.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="hospital.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/ID">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/hospital_id">
+                <Annotation Term="Common.Label" String="HospitalID"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/hospital_name">
+                <Annotation Term="Common.Label" String="Hospital Name"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/address">
+                <Annotation Term="Common.Label" String="Address"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/no_of_doctors">
+                <Annotation Term="Common.Label" String="no of doctors"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/no_of_patients">
+                <Annotation Term="Common.Label" String="no of patients"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Hospital/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor">
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="name"/>
+                            <PropertyValue Property="Value" Path="name"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="profession"/>
+                            <PropertyValue Property="Value" Path="profession"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Label" String="experience"/>
+                            <PropertyValue Property="Value" Path="experience"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="UI.FieldGroup" Qualifier="Doctor">
+                    <Record Type="UI.FieldGroupType">
+                        <PropertyValue Property="Data">
+                            <Collection>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="name"/>
+                                    <PropertyValue Property="Value" Path="name"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="profession"/>
+                                    <PropertyValue Property="Value" Path="profession"/>
+                                </Record>
+                                <Record Type="UI.DataField">
+                                    <PropertyValue Property="Label" String="experience"/>
+                                    <PropertyValue Property="Value" Path="experience"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="ItemsFacet"/>
+                            <PropertyValue Property="Label" String="Items"/>
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Doctor"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.EntityContainer/Doctor">
+                <Annotation Term="Common.DraftNode">
+                    <Record Type="Common.DraftNodeType">
+                        <PropertyValue Property="PreparationAction" String="hospital.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/ID">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/name">
+                <Annotation Term="Common.Label" String="name"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/profession">
+                <Annotation Term="Common.Label" String="profession"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/experience">
+                <Annotation Term="Common.Label" String="experience"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/IsActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/HasActiveEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/HasDraftEntity">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.Doctor/DraftAdministrativeData">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData">
+                <Annotation Term="Common.Label" String="Draft Administrative Data"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/DraftUUID">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Draft (Technical ID)"/>
+                <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/CreationDateTime">
+                <Annotation Term="Common.Label" String="Draft Created On"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/CreatedByUser">
+                <Annotation Term="Common.Label" String="Draft Created By"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/DraftIsCreatedByMe">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Draft Created By Me"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/LastChangeDateTime">
+                <Annotation Term="Common.Label" String="Draft Last Changed On"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/LastChangedByUser">
+                <Annotation Term="Common.Label" String="Draft Last Changed By"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/InProcessByUser">
+                <Annotation Term="Common.Label" String="Draft In Process By"/>
+            </Annotations>
+            <Annotations Target="hospital.DraftAdministrativeData/DraftIsProcessedByMe">
+                <Annotation Term="UI.Hidden" Bool="true"/>
+                <Annotation Term="Common.Label" String="Draft In Process By Me"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
