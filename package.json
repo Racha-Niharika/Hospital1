@@ -25,7 +25,8 @@
     "start": "cds-serve",
     "watch-hospital": "cds watch --open hospital/webapp/index.html?sap-ui-xx-viewCache=false",
     "watch-hosptal1": "cds watch --open hosptal1/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-hospital1": "cds watch --open hospital1/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-hospital1": "cds watch --open hospital1/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-app": "cds watch --open app/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "cds": {
     "fiori": {
@@ -37,6 +38,26 @@
         "kind": "sqlite",
         "credentials": {
           "url": "db.sqlite"
+        }
+      },
+      "auth": {
+        "[production]": {
+          "strategy": "JWT"
+        },
+        "[test]": {
+          "strategy": "mock"
+        }
+      },
+      "API_OPLACCTGDOCITEMCUBE_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/API_OPLACCTGDOCITEMCUBE_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
+        "[production]": {
+          "credentials": {
+            "destination": "S4HANA",
+            "path": "/sap/opu/odata/sap/API_OPLACCTGDOCITEMCUBE_SRV"
+          }
         }
       }
     }

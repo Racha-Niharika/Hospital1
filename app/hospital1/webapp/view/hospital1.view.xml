@@ -1,0 +1,10 @@
+<mvc:View
+    controllerName="hospital1.controller.hospital1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <!-- View content -->
+    <Button
+        text="Upload"
+        press=".hospital" 
+    />
+</mvc:View>

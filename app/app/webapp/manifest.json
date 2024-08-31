@@ -1,0 +1,144 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "app",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.14.2",
+      "toolsId": "469d8024-eca5-45e0-abc6-0e20b1696fab"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/hospital/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.127.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.f": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.ui.table": {},
+        "sap.ushell": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "app.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "app.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "Routeapp",
+          "pattern": ":?query:",
+          "target": [
+            "Targetapp"
+          ]
+        }
+      ],
+      "targets": {
+        "Targetapp": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "app",
+          "viewName": "app"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "app.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    },
+   "resourceRoots": {
+			"app.images":  "../../../images"
+		},
+    "config": {
+			"sample": {
+				"stretch": true,
+				"files": [
+					"view/App.view.xml",
+					"controller/App.controller.js",
+          "BusyDialog.fragment.xml",
+					"manifest.json",
+					"../../../images/Speakers_avatar_01.jpg",
+					"../../../images/Woman_avatar_01.png",
+					"../../../images/Woman_avatar_02.png",
+					"../../../images/Screw_avatar_01.jpg",
+					"../../../images/Lamp_avatar_01.jpg"
+				]
+			}
+		}
+  }
+}

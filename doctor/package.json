@@ -10,7 +10,7 @@
   ],
   "main": "webapp/index.html",
   "dependencies": {
-    "ui5-cc-spreadsheetimporter": "1.1.1"
+    "ui5-cc-spreadsheetimporter": "1.2.0"
   },
   "devDependencies": {
     "@ui5/cli": "^3.0.0",
@@ -33,6 +33,7 @@
   "sapuxLayer": "CUSTOMER_BASE",
   "ui5": {
     "dependencies": [
+      "ui5-cc-spreadsheetimporter",
       "ui5-cc-spreadsheetimporter"
     ]
   }

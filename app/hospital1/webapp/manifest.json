@@ -121,6 +121,13 @@
                       "enabled": true,
                       "requiresSelection": false,
                       "text": "insert"
+                    },
+                    "uploadVendorMail": {
+                      "press": ".extension.hospital1.ext.controller.UploadVendorMail.uploadMailDialog",
+                      "visible": true,
+                      "enabled": true,
+                      "requiresSelection": false,
+                      "text": "upload"
                     }
                   }
                 }
@@ -137,6 +144,15 @@
               "editableHeaderContent": false,
               "contextPath": "/Hospital"
             }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ListReport.ListReportController#hospital1::HospitalList": {
+            "controllerName": "hospital1.ext.controller.UploadVendorMail"
           }
         }
       }

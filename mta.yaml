@@ -49,7 +49,7 @@ modules:
 
   - name: Hospital1-postgresql-deployer
     type: nodejs
-    path: gen/pg
+    path: gen/srv
     parameters:
       buildpack: nodejs_buildpack
       no-route: true

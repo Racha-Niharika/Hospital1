@@ -1,0 +1,16 @@
+<mvc:View
+	controllerName="app.controller.app"
+	xmlns:l="sap.ui.layout"
+	xmlns:u="sap.ui.unified"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	class="viewPadding">
+	
+			<Button
+			text="Dialog"
+			width="230px"
+			press=".onDefaultDialogPress"
+			class="sapUiSmallMarginBottom"
+			ariaHasPopup="Dialog" />
+	
+</mvc:View>
