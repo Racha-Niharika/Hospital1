@@ -16,11 +16,23 @@ service hospital {
         *
     };
     entity Doctor as projection on db.Doctor{
+        
         @UI.Hidden: true
         ID,
         *
     };
+    action DownloadTemplate() returns String;
+    action UploadData() returns Boolean;
+    action fileUpload(mimeType: String, fileName: String, fileContent: String, fileExtension: String) returns Boolean;
+    action downloadFile() returns {
+        fileContent: String;
+        fileName: String;
+        mimeType: String;
+        fileExtension: String;
+    };
+  //function DownloadTemplate() returns Binary;
 };
+
 annotate hospital.Courses with @odata.draft.enabled;
 annotate hospital.Hospital with @odata.draft.enabled;
 annotate hospital.Hospital with @(

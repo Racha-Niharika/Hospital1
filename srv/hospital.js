@@ -1,3 +1,159 @@
+// File: srv/myservice.js
+const cds = require('@sap/cds');
+const XLSX = require('xlsx');
+module.exports = cds.service.impl(async function () {
+  this.on('fileUpload', async (req) => {
+    const { mimeType, fileName, fileContent, fileExtension } = req.data;
+
+    if (mimeType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        return req.error('Unsupported file type. Please upload an Excel file.');
+    }
+
+    try {
+        // Decode the Base64-encoded file content
+        const fileBuffer = Buffer.from(fileContent, 'base64');
+
+        // Parse the Excel file
+        const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+        const sheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(sheet);
+
+        // Save data to the Hospital entity
+        const tx = cds.transaction(req);
+        for (const row of data) {
+            await tx.run(INSERT.into('hospital_hospital').entries({
+              id:row['id'],
+                hospital_id: row['hospital_id'],
+                hospital_name: row['hospital_name'],
+                address: row['address'],
+                no_of_doctors: row['no_of_doctors'],
+                no_of_patients: row['no_of_patients']
+            }));
+        }
+
+        // Indicate success
+        return { success: true };
+
+    } catch (error) {
+        console.error('File upload failed:', error);
+        return req.error('Failed to process the file. Please try again.');
+    }
+    });
+
+    this.on('downloadFile', async (req) => {
+        // Fetch the file data from database or storage
+        // Example implementation:
+        // const fileData = await getFileFromDatabase(req.data.fileId);
+
+        const fileData = {
+            fileContent: '', // base64 encoded file content
+            fileName: 'example.xlsx',
+            mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            fileExtension: 'xlsx'
+        };
+
+        return fileData;
+    });
+});
+/*const cds = require('@sap/cds');
+const ExcelJS = require('exceljs');
+
+module.exports = cds.service.impl(async function() {
+  const cds = require('@sap/cds');
+const { Buffer } = require('buffer');
+
+
+    this.on('fileUpload', async (req) => {
+        try {
+            const { mimeType, fileName, fileContent, process } = req.data;
+            
+            // Decode file content from Base64
+            const buffer = Buffer.from(fileContent, 'base64');
+
+            // Use ExcelJS or another library to process the buffer
+            const ExcelJS = require('exceljs');
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(buffer);
+
+            const worksheet = workbook.worksheets[0];
+            const data = worksheet.getSheetValues();
+
+            // Process and save data to database
+            await processAndSaveData(data);
+
+            return { message: 'File uploaded and processed successfully.' };
+        } catch (error) {
+            console.error('Error processing file upload:', error);
+            throw new Error('Failed to process file upload');
+        }
+    });
+    this.on('UploadData', async (req) => {
+      // Retrieve the uploaded data from the request
+      const uploadedData = req.data;
+
+      try {
+          // Process and save the data into the entity
+          await cds.tx(req).run(
+              INSERT.into(Hospital).entries(uploadedData)
+          );
+          return true; // Indicate success
+      } catch (error) {
+          console.error('Upload failed:', error);
+          return false; // Indicate failure
+      }
+  });
+
+    async function processAndSaveData(data) {
+        const db = await cds.connect.to('db');
+        const { Hospital } = db.entities;
+
+        // Clear existing data
+        await db.run(DELETE.from(Hospital));
+
+        // Parse and insert data
+        const rows = data.slice(1); // Skip header row
+        for (const row of rows) {
+            const [hospital_id, hospital_name, address, no_of_doctors, no_of_patients] = row;
+            await db.run(INSERT.into(Hospital).entries({
+                hospital_id, hospital_name, address, no_of_doctors, no_of_patients
+            }));
+        }
+    }
+
+
+    this.on('DownloadTemplate', async (req) => {
+        try {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Hospital Template');
+
+            // Define columns based on the entity 'Hospital'
+            worksheet.columns = [
+                { header: 'Hospital ID', key: 'hospital_id', width: 20 },
+                { header: 'Hospital Name', key: 'hospital_name', width: 30 },
+                { header: 'Address', key: 'address', width: 30 }
+                // Add more columns as needed based on your entity
+            ];
+
+            // Optionally, add some example data or leave it blank
+            worksheet.addRow({ hospital_id: '', hospital_name: '', address: '' });
+
+            // Generate the Excel file in memory
+            const buffer = await workbook.xlsx.writeBuffer();
+
+            // Set headers to download the file
+            req._.res.setHeader('Content-Disposition', 'attachment; filename="Hospital_Template.xlsx"');
+            req._.res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+            return buffer;
+        } catch (error) {
+            console.error('Error generating Excel template:', error);
+            req.error(500, 'Failed to generate Excel template');
+        }
+    });
+});
+
+*/
 /*
 const cds = require('@sap/cds');
 const xlsx = require('xlsx');
@@ -75,6 +231,7 @@ module.exports = cds.service.impl(async function () {
   }
 });
 */
+/*
 const express = require('express');
 const bodyParser = require('body-parser');
 const cds = require('@sap/cds');
@@ -155,3 +312,4 @@ async function importExcelData() {
 app.listen(3000, () => {
     console.log('Server is running on port 4004');
 });
+*/

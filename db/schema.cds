@@ -15,6 +15,13 @@ entity Hospital : cuid  {
     no_of_patients: Integer ;
     Doctor : Composition of many Doctor on Doctor.id=$self;
 }
+action fileUpload(
+    mimeType: String,
+    fileName: String,
+    fileContent: String,
+    fileExtension: String
+) returns Boolean;
+define action UploadData() returns Boolean;
 entity Doctor : cuid {
      key ID : UUID;
      id:Association to Hospital;
