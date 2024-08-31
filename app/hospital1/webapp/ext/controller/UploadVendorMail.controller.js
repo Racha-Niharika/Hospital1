@@ -93,40 +93,38 @@ sap.ui.define([
 		
 		
         onTempDownload: function (oEvent) {
-			var that = this;
-			var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
-			
-			$.ajax({
-				url: "/odata/v4/hospital/downloadFile",  // Replace with your actual service URL
-				type: "POST",
-				contentType: "application/json",
-				dataType: "json",
-				success: function (response) {
-					// Assuming response contains the file details
-					var fileData = response;
-		
-					// Convert base64 encoded fileContent to binary
-					var fileContent = atob(fileData.fileContent);
-					var uint8Array = new Uint8Array(fileContent.length);
-					for (var i = 0; i < fileContent.length; i++) {
-						uint8Array[i] = fileContent.charCodeAt(i);
-					}
-					var blob = new Blob([uint8Array], { type: fileData.mimeType });
-		
-					// Trigger file download
-					var link = document.createElement('a');
-					link.href = URL.createObjectURL(blob);
-					link.download = fileData.fileName;
-					link.click();
-		
-					MessageToast.show(oResourceBundle.getText("downloadTempSuccMsg"));
-				},
-				error: function (xhr, status, error) {
-					// Handle error
-					MessageToast.show(oResourceBundle.getText("downloadTempErrMsg"));
-				}
-			});
-		}
+			var wb = XLSX.utils.book_new();
+            var wsData = [
+                ["id", "hospital_id", "hospital_name", "address", "no_of_doctors", "no_of_patients"] 
+            ];
+            var ws = XLSX.utils.aoa_to_sheet(wsData);
+            XLSX.utils.book_append_sheet(wb, ws, "Template");
+            var wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+            function s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+            }
+            var blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "hospital_template.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+		},
+		onCancelPress: function() {
+            // Get the dialog by its ID
+            var oDialog = this.byId("idFileDialog");
+
+            // Close the dialog
+            if (oDialog) {
+                oDialog.close();
+            }
+        },
 		
     });
 });
