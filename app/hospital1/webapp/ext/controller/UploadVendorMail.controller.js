@@ -12,24 +12,37 @@ sap.ui.define([
     };
 
     return ControllerExtension.extend('hospital1.ext.controller.UploadVendorMail', {
+        oDialog: null,
         override: {
             onInit: function () {
-                var oModel = this.base.getExtensionAPI().getModel();
+                
             }
         },
 
         uploadMailDialog: function (oEvent) {
-            var oDialog;
-            this.base.getExtensionAPI().loadFragment({
-                name: Constants.fragmentName,
-                type: "XML",
-                controller: this
-            }).then(function (oDialogResult) {
-                oDialog = oDialogResult;
-                oDialog.open();
-            });
+            var that = this;
+            if (!this.oDialog) {  // Check if the dialog is already created
+                Fragment.load({
+                    name: Constants.fragmentName,
+                    controller: this
+                }).then(function (oDialog) {
+                    that.oDialog = oDialog;  // Store the dialog instance
+                    that.getView().addDependent(that.oDialog);  // Ensure the dialog is properly attached to the view
+                    that.oDialog.open();
+                });
+            } else {
+                this.oDialog.open();  // Open the dialog if it already exists
+            }
         },
+        onCancelPress: function () {
+            var oDialog = this.oDialog || sap.ui.getCore().byId("idFileDialog");
 
+            if (oDialog) {
+                oDialog.close();
+            } else {
+                console.error("Dialog not found.");
+            }
+        },
 		onFileChange: function (oEvent) {
 			var file = oEvent.getParameter("files")[0];
 			if (!file) {
@@ -51,47 +64,51 @@ sap.ui.define([
 		},
 		
 		onUploadPress: function (oEvent) {
-			var that = this;
-			var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
-		
-			// Check if fileContent is defined
-			if (!this.fileContent || this.fileContent === "") {
-				MessageToast.show(oResourceBundle.getText("uploadFileErrMsg"));
-				return;
-			}
-		
-			// Prepare data for upload
-			var data = JSON.stringify({
-				mimeType: this.fileType,
-				fileName: this.fileName,
-				fileContent: this.fileContent,
-				fileExtension: this.fileExtension
-			});
-		
-			$.ajax({
-				url: "/odata/v4/hospital/fileUpload",  // Replace with your actual service URL
-				type: "POST",
-				contentType: "application/json",
-				data: data,
-				dataType: "json",
-				success: function (response) {
-					MessageToast.show(oResourceBundle.getText("uploadFileSuccMsg"));
-					// Clear the file uploader and file content
-					sap.ui.getCore().byId("idFileUpload").clear();
-					that.fileContent = undefined;
-				},
-				error: function (xhr, status, error) {
-					// Handle error
-					var errorMessage = oResourceBundle.getText("uploadFileErrMsg");
-					MessageToast.show(errorMessage);
-		
-					// Log or handle specific error details if needed
-					console.error("Upload failed:", error);
-				}
-			});
-		},
-		
-		
+            var that = this;
+            var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
+        
+            // Check if fileContent is defined
+            if (!this.fileContent || this.fileContent === "") {
+                MessageToast.show(oResourceBundle.getText("uploadFileErrMsg"));
+                return;
+            }
+        
+            // Prepare data for upload
+            var data = JSON.stringify({
+                mimeType: this.fileType,
+                fileName: this.fileName,
+                fileContent: this.fileContent,
+                fileExtension: this.fileExtension
+            });
+        
+            $.ajax({
+                url: "/odata/v4/hospital/fileUpload",  // Replace with your actual service URL
+                type: "POST",
+                contentType: "application/json",
+                data: data,
+                dataType: "json",
+                success: function (response) {
+                    MessageToast.show(oResourceBundle.getText("sucessfully uploaded the file"));
+                    // Clear the file uploader and file content
+                    sap.ui.getCore().byId("idFileUpload").clear();
+                    that.fileContent = undefined;
+        
+                    // Close the dialog after successful upload
+                    if (that.oDialog) {
+                        that.oDialog.close();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    var errorMessage = oResourceBundle.getText("uploadFileErrMsg");
+                    MessageToast.show(errorMessage);
+        
+                    // Log or handle specific error details if needed
+                    console.error("Upload failed:", error);
+                }
+            });
+        },
+        
         onTempDownload: function (oEvent) {
 			var wb = XLSX.utils.book_new();
             var wsData = [
@@ -116,15 +133,7 @@ sap.ui.define([
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 		},
-		onCancelPress: function() {
-            // Get the dialog by its ID
-            var oDialog = this.byId("idFileDialog");
-
-            // Close the dialog
-            if (oDialog) {
-                oDialog.close();
-            }
-        },
+		
 		
     });
 });
