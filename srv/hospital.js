@@ -1,4 +1,4 @@
-// File: srv/myservice.js
+
 const cds = require('@sap/cds');
 const XLSX = require('xlsx');
 module.exports = cds.service.impl(async function () {
@@ -10,16 +10,12 @@ module.exports = cds.service.impl(async function () {
     }
 
     try {
-        // Decode the Base64-encoded file content
         const fileBuffer = Buffer.from(fileContent, 'base64');
-
-        // Parse the Excel file
         const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
-        const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+        const sheetName = workbook.SheetNames[0]; 
         const sheet = workbook.Sheets[sheetName];
         const data = XLSX.utils.sheet_to_json(sheet);
 
-        // Save data to the Hospital entity
         const tx = cds.transaction(req);
         for (const row of data) {
             await tx.run(INSERT.into('hospital_hospital').entries({
@@ -31,29 +27,12 @@ module.exports = cds.service.impl(async function () {
                 no_of_patients: row['no_of_patients']
             }));
         }
-
-        // Indicate success
         return { success: true };
 
     } catch (error) {
         console.error('File upload failed:', error);
         return req.error('Failed to process the file. Please try again.');
     }
-    });
-
-    this.on('downloadFile', async (req) => {
-        // Fetch the file data from database or storage
-        // Example implementation:
-        // const fileData = await getFileFromDatabase(req.data.fileId);
-
-        const fileData = {
-            fileContent: '', // base64 encoded file content
-            fileName: 'example.xlsx',
-            mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            fileExtension: 'xlsx'
-        };
-
-        return fileData;
     });
 });
 /*const cds = require('@sap/cds');

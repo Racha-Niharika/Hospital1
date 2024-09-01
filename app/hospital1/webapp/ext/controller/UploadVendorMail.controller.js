@@ -21,17 +21,17 @@ sap.ui.define([
 
         uploadMailDialog: function (oEvent) {
             var that = this;
-            if (!this.oDialog) {  // Check if the dialog is already created
+            if (!this.oDialog) { 
                 Fragment.load({
                     name: Constants.fragmentName,
                     controller: this
                 }).then(function (oDialog) {
-                    that.oDialog = oDialog;  // Store the dialog instance
-                    that.getView().addDependent(that.oDialog);  // Ensure the dialog is properly attached to the view
+                    that.oDialog = oDialog;  
+                    that.getView().addDependent(that.oDialog);  
                     that.oDialog.open();
                 });
             } else {
-                this.oDialog.open();  // Open the dialog if it already exists
+                this.oDialog.open();  
             }
         },
         onCancelPress: function () {
@@ -49,16 +49,16 @@ sap.ui.define([
 				return;
 			}
 		
-			this.fileType = file.type;  // Mime type or file type
-			this.fileName = file.name;  // File name
-			this.fileExtension = file.name.split('.').pop(); // Extract file extension
+			this.fileType = file.type;  
+			this.fileName = file.name;  
+			this.fileExtension = file.name.split('.').pop();
 		
 			var fileReader = new FileReader();
 			
 			fileReader.onload = function (loadEvent) {
-				// Extract base64 content from data URL
+				
 				this.fileContent = loadEvent.target.result.split(",")[1];
-			}.bind(this);  // Bind 'this' to ensure it refers to the controller instance
+			}.bind(this);  
 		
 			fileReader.readAsDataURL(file);
 		},
@@ -67,13 +67,12 @@ sap.ui.define([
             var that = this;
             var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
         
-            // Check if fileContent is defined
             if (!this.fileContent || this.fileContent === "") {
                 MessageToast.show(oResourceBundle.getText("uploadFileErrMsg"));
                 return;
             }
         
-            // Prepare data for upload
+           
             var data = JSON.stringify({
                 mimeType: this.fileType,
                 fileName: this.fileName,
@@ -82,7 +81,7 @@ sap.ui.define([
             });
         
             $.ajax({
-                url: "/odata/v4/hospital/fileUpload",  // Replace with your actual service URL
+                url: "/odata/v4/hospital/fileUpload",  
                 type: "POST",
                 contentType: "application/json",
                 data: data,
@@ -93,17 +92,17 @@ sap.ui.define([
                     sap.ui.getCore().byId("idFileUpload").clear();
                     that.fileContent = undefined;
         
-                    // Close the dialog after successful upload
+                   
                     if (that.oDialog) {
                         that.oDialog.close();
                     }
                 },
                 error: function (xhr, status, error) {
-                    // Handle error
-                    var errorMessage = oResourceBundle.getText("uploadFileErrMsg");
+                    
+                    var errorMessage = oResourceBundle.getText("error uploading file");
                     MessageToast.show(errorMessage);
         
-                    // Log or handle specific error details if needed
+                   
                     console.error("Upload failed:", error);
                 }
             });
