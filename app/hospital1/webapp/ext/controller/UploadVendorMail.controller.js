@@ -91,11 +91,13 @@ sap.ui.define([
                     // Clear the file uploader and file content
                     sap.ui.getCore().byId("idFileUpload").clear();
                     that.fileContent = undefined;
-        
+                    
                    
                     if (that.oDialog) {
                         that.oDialog.close();
                     }
+                that._refreshListReport();
+
                 },
                 error: function (xhr, status, error) {
                     
@@ -106,6 +108,14 @@ sap.ui.define([
                     console.error("Upload failed:", error);
                 }
             });
+        },
+        _refreshListReport: function () {
+            var oExtensionAPI = this.getView().getController().getExtensionAPI();  // Get the extension API
+            if (oExtensionAPI && oExtensionAPI.refresh) {
+                oExtensionAPI.refresh();  // Refresh the List Report's binding
+            } else {
+                console.error("Extension API not available for refreshing List Report.");
+            }
         },
         
         onTempDownload: function (oEvent) {
