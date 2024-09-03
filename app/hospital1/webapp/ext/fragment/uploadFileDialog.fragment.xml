@@ -17,7 +17,6 @@
 				<content>
 					<Button id="idDownloadTempButton" text="{i18n>downloadTempButtonTxt}" press="onTempDownload" icon= "sap-icon://download-from-cloud" />
 					<Button id="idUploadButton" text="{i18n>uploadButtonTxt}" type="Emphasized" press="onUploadPress" icon="sap-icon://upload-to-cloud" />
-				
 				</content>
 			</Toolbar>
 		</footer>

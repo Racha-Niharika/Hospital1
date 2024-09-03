@@ -3,7 +3,7 @@ const cds = require('@sap/cds');
 const XLSX = require('xlsx');
 module.exports = cds.service.impl(async function () {
   this.on('fileUpload', async (req) => {
-    const { mimeType, fileName, fileContent, fileExtension } = req.data;
+    const { mimeType, fileContent } = req.data;
 
     if (mimeType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         return req.error('Unsupported file type. Please upload an Excel file.');

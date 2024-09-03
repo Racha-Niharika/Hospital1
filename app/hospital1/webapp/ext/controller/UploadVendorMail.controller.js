@@ -110,9 +110,9 @@ sap.ui.define([
             });
         },
         _refreshListReport: function () {
-            var oExtensionAPI = this.getView().getController().getExtensionAPI();  // Get the extension API
+            var oExtensionAPI = this.getView().getController().getExtensionAPI();  
             if (oExtensionAPI && oExtensionAPI.refresh) {
-                oExtensionAPI.refresh();  // Refresh the List Report's binding
+                oExtensionAPI.refresh(); 
             } else {
                 console.error("Extension API not available for refreshing List Report.");
             }
